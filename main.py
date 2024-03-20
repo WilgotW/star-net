@@ -92,10 +92,26 @@ def predict_star_characteristics(temp, lum, rad):
     spectral_class = label_encoder_class.inverse_transform([spectral_class_pred.argmax().item()])[0]
     return Star(star_type, star_color, spectral_class)
 
-# Example usage
+# Saving the test set for evaluation
+test_features_df = pd.DataFrame(X_test, columns=['Temperature (K)', 'Luminosity(L/Lo)', 'Radius(R/Ro)'])
+test_labels_df = pd.DataFrame(Y_test, columns=['Star type', 'Star color encoded', 'Spectral Class encoded'])
+test_labels_df['Star color'] = label_encoder_color.inverse_transform(test_labels_df['Star color encoded'])
+test_labels_df['Spectral Class'] = label_encoder_class.inverse_transform(test_labels_df['Spectral Class encoded'])
+
+# Combine features and labels for the test set
+test_set_df = pd.concat([test_features_df, test_labels_df[['Star type', 'Star color', 'Spectral Class']]], axis=1)
+test_set_df.to_csv('./test_set.csv', index=False)
+
+# Example usage for making a prediction
 temp = float(input("Enter temperature (K): "))
 lum = float(input("Enter luminosity (L/Lo): "))
 rad = float(input("Enter radius (R/Ro): "))
 
 predicted_star = predict_star_characteristics(temp, lum, rad)
 print(predicted_star)
+
+# Instructions for loading and using the saved test set
+# To use the saved test set for further evaluation, you can load it using pandas:
+# loaded_test_set = pd.read_csv('./test_set.csv')
+
+   
