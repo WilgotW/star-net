@@ -1,125 +1,116 @@
 import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, LabelEncoder
 import torch
+from torch.utils.data import DataLoader, TensorDataset
 import torch.nn as nn
 import torch.optim as optim
-from torch.utils.data import Dataset, DataLoader
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder, StandardScaler
+import torch.nn.functional as F
 
 # Load and preprocess the dataset
-df = pd.read_csv('./star_data.csv')
-X = df[['Temperature (K)', 'Luminosity(L/Lo)', 'Radius(R/Ro)']]
-y = df[['Star type', 'Star color', 'Spectral Class']]
+star_data = pd.read_csv('star_data.csv')
+label_encoder_color = LabelEncoder()
+label_encoder_class = LabelEncoder()
+star_data['Star color encoded'] = label_encoder_color.fit_transform(star_data['Star color'])
+star_data['Spectral Class encoded'] = label_encoder_class.fit_transform(star_data['Spectral Class'])
 
-# Normalize the features
+X = star_data[['Temperature (K)', 'Luminosity(L/Lo)', 'Radius(R/Ro)']].values
+Y = star_data[['Star type', 'Star color encoded', 'Spectral Class encoded']].values
+
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 
-# Encode the categorical outputs
-color_encoder = LabelEncoder()
-y['Star color'] = color_encoder.fit_transform(y['Star color'])
+X_train, X_test, Y_train, Y_test = train_test_split(X_scaled, Y, test_size=0.2, random_state=42)
+X_train_tensor = torch.tensor(X_train, dtype=torch.float)
+Y_train_tensor = torch.tensor(Y_train, dtype=torch.float)
+X_test_tensor = torch.tensor(X_test, dtype=torch.float)
+Y_test_tensor = torch.tensor(Y_test, dtype=torch.float)
 
-spectral_encoder = LabelEncoder()
-y['Spectral Class'] = spectral_encoder.fit_transform(y['Spectral Class'])
-
-# Split the dataset into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
-
-# Convert data into PyTorch tensors
-X_train_tensor = torch.tensor(X_train.astype('float32').values)
-X_test_tensor = torch.tensor(X_test.astype('float32').values)
-y_train_tensor = torch.tensor(y_train.values.astype('int64'))
-y_test_tensor = torch.tensor(y_test.values.astype('int64'))
-
-# Define custom dataset
-class StarDataset(Dataset):
-    def __init__(self, features, labels):
-        self.features = features
-        self.labels = labels
-
-    def __len__(self):
-        return len(self.features)
-
-    def __getitem__(self, idx):
-        return self.features[idx], self.labels[idx]
-
-# Create dataset instances
-train_dataset = StarDataset(X_train_tensor, y_train_tensor)
-test_dataset = StarDataset(X_test_tensor, y_test_tensor)
-
-# Create DataLoader instances
+train_dataset = TensorDataset(X_train_tensor, Y_train_tensor)
 train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
-test_loader = DataLoader(test_dataset, batch_size=64, shuffle=False)
 
-# Neural Network Model
-class StarTypePredictor(nn.Module):
-    def __init__(self, num_features, num_star_types, num_colors, num_spectral_classes):
-        super(StarTypePredictor, self).__init__()
-        self.fc1 = nn.Linear(num_features, 64)
-        self.fc2 = nn.Linear(64, 32)
-        self.fc3 = nn.Linear(32, 16)
-        self.type_layer = nn.Linear(16, num_star_types)
-        self.color_layer = nn.Linear(16, num_colors)
-        self.spectral_layer = nn.Linear(16, num_spectral_classes)
+# Define the neural network
+class StarNet(nn.Module):
+    def __init__(self, num_colors, num_classes):
+        super(StarNet, self).__init__()
+        self.fc1 = nn.Linear(3, 64)
+        self.fc2 = nn.Linear(64, 128)
+        self.fc3 = nn.Linear(128, 64)
+        self.fc_out_type = nn.Linear(64, 1)  # For Star type
+        self.fc_out_color = nn.Linear(64, num_colors)  # For Star color
+        self.fc_out_class = nn.Linear(64, num_classes)  # For Spectral Class
 
     def forward(self, x):
-        x = torch.relu(self.fc1(x))
-        x = torch.relu(self.fc2(x))
-        x = torch.relu(self.fc3(x))
-        star_type = self.type_layer(x)
-        star_color = self.color_layer(x)
-        spectral_class = self.spectral_layer(x)
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        x = F.relu(self.fc3(x))
+        star_type = self.fc_out_type(x)
+        star_color = self.fc_out_color(x)
+        spectral_class = self.fc_out_class(x)
         return star_type, star_color, spectral_class
 
-# Initialize the model
-num_features = X_train_tensor.shape[1]
-num_star_types = y_train['Star type'].nunique()
-num_colors = y_train['Star color'].nunique()
-num_spectral_classes = y_train['Spectral Class'].nunique()
-
-model = StarTypePredictor(num_features, num_star_types, num_colors, num_spectral_classes)
-
-# Training
-criterion_type = nn.CrossEntropyLoss()
-criterion_color = nn.CrossEntropyLoss()
-criterion_spectral = nn.CrossEntropyLoss()
+# Training the model
+model = StarNet(len(label_encoder_color.classes_), len(label_encoder_class.classes_))
 optimizer = optim.Adam(model.parameters(), lr=0.001)
+criterion_regression = nn.MSELoss()
+criterion_classification = nn.CrossEntropyLoss()
 
-num_epochs = 100
+num_epochs = 1000
 for epoch in range(num_epochs):
     for inputs, labels in train_loader:
         optimizer.zero_grad()
-        type_pred, color_pred, spectral_pred = model(inputs)
-        loss_type = criterion_type(type_pred, labels[:, 0])
-        loss_color = criterion_color(color_pred, labels[:, 1])
-        loss_spectral = criterion_spectral(spectral_pred, labels[:, 2])
-        loss = loss_type + loss_color + loss_spectral
+        star_type, star_color, spectral_class = model(inputs)
+        loss_type = criterion_regression(star_type, labels[:, 0].view(-1, 1))
+        loss_color = criterion_classification(star_color, labels[:, 1].long())
+        loss_class = criterion_classification(spectral_class, labels[:, 2].long())
+        loss = loss_type + loss_color + loss_class
         loss.backward()
         optimizer.step()
 
-    print(f'Epoch {epoch+1}, Loss: {loss.item()}')
+# Function for making predictions
+def predict_star_characteristics(temp, lum, rad):
+    user_input_scaled = scaler.transform([[temp, lum, rad]])
+    user_input_tensor = torch.tensor(user_input_scaled, dtype=torch.float)
+    
+    model.eval()  # Set the model to evaluation mode
+    with torch.no_grad():  # Inference without tracking gradients
+        star_type_pred, star_color_pred, spectral_class_pred = model(user_input_tensor)
+    
+    # Round the star type to the nearest whole number
+    star_type = round(star_type_pred.item())
+    star_color = label_encoder_color.inverse_transform([star_color_pred.argmax().item()])[0]
+    spectral_class = label_encoder_class.inverse_transform([spectral_class_pred.argmax().item()])[0]
+    
+    return star_type, star_color, spectral_class
 
-# Evaluation
-model.eval()  # Set the model to evaluation mode
-correct_type = correct_color = correct_spectral = total = 0
 
-with torch.no_grad():  # No gradients needed for evaluation
-    for inputs, labels in test_loader:
-        type_pred, color_pred, spectral_pred = model(inputs)
-        _, predicted_type = torch.max(type_pred, 1)
-        _, predicted_color = torch.max(color_pred, 1)
-        _, predicted_spectral = torch.max(spectral_pred, 1)
+class Star:
+    def __init__(self, star_type, color, spectral_class):
+        # Conversion from star type number to its string representation
+        star_type_dict = {
+            0: "Brown Dwarf",
+            1: "Red Dwarf",
+            2: "White Dwarf",
+            3: "Main Sequence",
+            4: "Supergiant",
+            5: "Hypergiant"
+        }
+        # Convert star type from int to string description
+        self.starType = star_type_dict.get(star_type, "Unknown")
+        self.color = color
+        self.spectralClass = spectral_class
 
-        total += labels.size(0)
-        correct_type += (predicted_type == labels[:, 0]).sum().item()
-        correct_color += (predicted_color == labels[:, 1]).sum().item()
-        correct_spectral += (predicted_spectral == labels[:, 2]).sum().item()
+    def __str__(self):
+        return f"Star Type: {self.starType}, Color: {self.color}, Spectral Class: {self.spectralClass}"
 
-# Calculate and print accuracies
-accuracy_type = 100 * correct_type / total
-accuracy_color = 100 * correct_color / total
-accuracy_spectral = 100 * correct_spectral / total
 
-print(f'Accuracy for Star Type Prediction: {accuracy_type:.2f}%')
-print(f'Accuracy for Star Color Prediction: {accuracy_color:.2f}%')
-print(f'Accuracy for Spectral Class Prediction: {accuracy_spectral:.2f}%')
+# Example usage
+temp = float(input("Enter temperature (K): "))
+lum = float(input("Enter luminosity (L/Lo): "))
+rad = float(input("Enter radius (R/Ro): "))
+
+predicted_star_type, predicted_star_color, predicted_spectral_class = predict_star_characteristics(temp, lum, rad)
+
+predicted_star = Star(predicted_star_type, predicted_star_color, predicted_spectral_class)
+print(predicted_star)
+
