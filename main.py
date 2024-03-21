@@ -1,5 +1,4 @@
 import pandas as pd
-from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 import torch
 from torch.utils.data import DataLoader, TensorDataset
@@ -17,20 +16,17 @@ star_data['Spectral Class encoded'] = label_encoder_class.fit_transform(star_dat
 X = star_data[['Temperature (K)', 'Luminosity(L/Lo)', 'Radius(R/Ro)']].values
 Y = star_data[['Star type', 'Star color encoded', 'Spectral Class encoded']].values
 
-# Keep a copy of the original test features for saving later
-X_original = X.copy()
-
+# Preprocess the data
 scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X)
+X_scaled = scaler.fit_transform(X)  # Scale the entire dataset
 
-# Split data into 2/3 for training and 1/3 for testing, using the scaled data for training/testing
-X_train_scaled, X_test_scaled, Y_train, Y_test = train_test_split(X_scaled, Y, test_size=1/3, random_state=42)
-X_train, X_test, _, _ = train_test_split(X_original, Y, test_size=1/3, random_state=42)  # Unscaled data for saving
+# Convert to tensors
+X_tensor = torch.tensor(X_scaled, dtype=torch.float)
+Y_tensor = torch.tensor(Y, dtype=torch.float)
 
-X_train_tensor = torch.tensor(X_train_scaled, dtype=torch.float)
-Y_train_tensor = torch.tensor(Y_train, dtype=torch.float)
-train_dataset = TensorDataset(X_train_tensor, Y_train_tensor)
-train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
+# Create a TensorDataset and DataLoader
+dataset = TensorDataset(X_tensor, Y_tensor)
+data_loader = DataLoader(dataset, batch_size=64, shuffle=True)
 
 # Neural network definition
 class StarNet(nn.Module):
@@ -52,15 +48,16 @@ class StarNet(nn.Module):
         spectral_class = self.fc_out_class(x)
         return star_type, star_color, spectral_class
 
-# Model training
+# Model instantiation
 model = StarNet(len(label_encoder_color.classes_), len(label_encoder_class.classes_))
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 criterion_regression = nn.MSELoss()
 criterion_classification = nn.CrossEntropyLoss()
 
+# Model training
 num_epochs = 5000
 for epoch in range(num_epochs):
-    for inputs, labels in train_loader:
+    for inputs, labels in data_loader:
         optimizer.zero_grad()
         star_type, star_color, spectral_class = model(inputs)
         loss_type = criterion_regression(star_type, labels[:, 0].view(-1, 1))
@@ -69,8 +66,10 @@ for epoch in range(num_epochs):
         loss = loss_type + loss_color + loss_class
         loss.backward()
         optimizer.step()
+    if epoch % 100 == 0:  # Adjust the printing frequency as needed
+        print(f"Epoch {epoch}, Loss: {loss.item()}")
 
-# Star class definition
+# Star class definition for packaging prediction results
 class Star:
     def __init__(self, star_type, color, spectral_class):
         star_type_dict = {0: "Brown Dwarf", 1: "Red Dwarf", 2: "White Dwarf",
@@ -93,11 +92,4 @@ def predict_star_characteristics(temp, lum, rad):
     star_color = label_encoder_color.inverse_transform([star_color_pred.argmax().item()])[0]
     spectral_class = label_encoder_class.inverse_transform([spectral_class_pred.argmax().item()])[0]
     return Star(star_type, star_color, spectral_class)
-
-test_features_df = pd.DataFrame(X_test, columns=['Temperature (K)', 'Luminosity(L/Lo)', 'Radius(R/Ro)'])
-test_labels_df = pd.DataFrame(Y_test, columns=['Star type', 'Star color encoded', 'Spectral Class encoded'])
-test_labels_df['Star color'] = label_encoder_color.inverse_transform(test_labels_df['Star color encoded'])
-test_labels_df['Spectral Class'] = label_encoder_class.inverse_transform(test_labels_df['Spectral Class encoded'])
-
-test_set_df = pd.concat([test_features_df, test_labels_df[['Star type', 'Star color', 'Spectral Class']]], axis=1)
 
