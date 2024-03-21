@@ -17,16 +17,18 @@ star_data['Spectral Class encoded'] = label_encoder_class.fit_transform(star_dat
 X = star_data[['Temperature (K)', 'Luminosity(L/Lo)', 'Radius(R/Ro)']].values
 Y = star_data[['Star type', 'Star color encoded', 'Spectral Class encoded']].values
 
+# Keep a copy of the original test features for saving later
+X_original = X.copy()
+
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 
-# Split data into 2/3 for training and 1/3 for testing
-X_train, X_test, Y_train, Y_test = train_test_split(X_scaled, Y, test_size=1/3, random_state=42)
-X_train_tensor = torch.tensor(X_train, dtype=torch.float)
-Y_train_tensor = torch.tensor(Y_train, dtype=torch.float)
-X_test_tensor = torch.tensor(X_test, dtype=torch.float)
-Y_test_tensor = torch.tensor(Y_test, dtype=torch.float)
+# Split data into 2/3 for training and 1/3 for testing, using the scaled data for training/testing
+X_train_scaled, X_test_scaled, Y_train, Y_test = train_test_split(X_scaled, Y, test_size=1/3, random_state=42)
+X_train, X_test, _, _ = train_test_split(X_original, Y, test_size=1/3, random_state=42)  # Unscaled data for saving
 
+X_train_tensor = torch.tensor(X_train_scaled, dtype=torch.float)
+Y_train_tensor = torch.tensor(Y_train, dtype=torch.float)
 train_dataset = TensorDataset(X_train_tensor, Y_train_tensor)
 train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
 
@@ -56,7 +58,7 @@ optimizer = optim.Adam(model.parameters(), lr=0.001)
 criterion_regression = nn.MSELoss()
 criterion_classification = nn.CrossEntropyLoss()
 
-num_epochs = 100
+num_epochs = 5000
 for epoch in range(num_epochs):
     for inputs, labels in train_loader:
         optimizer.zero_grad()
@@ -88,30 +90,14 @@ def predict_star_characteristics(temp, lum, rad):
     with torch.no_grad():
         star_type_pred, star_color_pred, spectral_class_pred = model(user_input_tensor)
     star_type = round(star_type_pred.item())
-    star_color = label_encoder_color.inverse_transform([star_color_pred.argmax().item()])[0]
+    star_color = label_encoder_color.inverse_transform([star_color_pred.argmax().item()])[0][0]
     spectral_class = label_encoder_class.inverse_transform([spectral_class_pred.argmax().item()])[0]
     return Star(star_type, star_color, spectral_class)
 
-# Saving the test set for evaluation
 test_features_df = pd.DataFrame(X_test, columns=['Temperature (K)', 'Luminosity(L/Lo)', 'Radius(R/Ro)'])
 test_labels_df = pd.DataFrame(Y_test, columns=['Star type', 'Star color encoded', 'Spectral Class encoded'])
 test_labels_df['Star color'] = label_encoder_color.inverse_transform(test_labels_df['Star color encoded'])
 test_labels_df['Spectral Class'] = label_encoder_class.inverse_transform(test_labels_df['Spectral Class encoded'])
 
-# Combine features and labels for the test set
 test_set_df = pd.concat([test_features_df, test_labels_df[['Star type', 'Star color', 'Spectral Class']]], axis=1)
-test_set_df.to_csv('./test_set.csv', index=False)
 
-# Example usage for making a prediction
-temp = float(input("Enter temperature (K): "))
-lum = float(input("Enter luminosity (L/Lo): "))
-rad = float(input("Enter radius (R/Ro): "))
-
-predicted_star = predict_star_characteristics(temp, lum, rad)
-print(predicted_star)
-
-# Instructions for loading and using the saved test set
-# To use the saved test set for further evaluation, you can load it using pandas:
-# loaded_test_set = pd.read_csv('./test_set.csv')
-
-   
