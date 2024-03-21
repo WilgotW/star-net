@@ -90,7 +90,7 @@ def predict_star_characteristics(temp, lum, rad):
     with torch.no_grad():
         star_type_pred, star_color_pred, spectral_class_pred = model(user_input_tensor)
     star_type = round(star_type_pred.item())
-    star_color = label_encoder_color.inverse_transform([star_color_pred.argmax().item()])[0][0]
+    star_color = label_encoder_color.inverse_transform([star_color_pred.argmax().item()])[0]
     spectral_class = label_encoder_class.inverse_transform([spectral_class_pred.argmax().item()])[0]
     return Star(star_type, star_color, spectral_class)
 
