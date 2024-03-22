@@ -26,7 +26,6 @@ class StarNet(nn.Module):
         return star_type, star_color, spectral_class
 
 def train_model():
-    # Load and preprocess the dataset
     star_data = pd.read_csv('./star_data.csv')
     label_encoder_color = LabelEncoder()
     label_encoder_class = LabelEncoder()
@@ -70,6 +69,5 @@ def train_model():
     torch.save(label_encoder_class, os.path.join("model", 'label_encoder_class.pth'))
     torch.save(scaler, os.path.join("model", 'scaler.pth'))
 
-# Ensure the training function runs only if this script is executed directly
 if __name__ == '__main__':
     train_model()
