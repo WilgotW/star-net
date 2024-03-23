@@ -26,7 +26,7 @@ class StarNet(nn.Module):
         return star_type, star_color, spectral_class
 
 def train_model():
-    star_data = pd.read_csv('./star_data.csv')
+    star_data = pd.read_csv('./adjusted_star_data.csv')
     label_encoder_color = LabelEncoder()
     label_encoder_class = LabelEncoder()
     star_data['Star color encoded'] = label_encoder_color.fit_transform(star_data['Star color'])
