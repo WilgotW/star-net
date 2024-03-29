@@ -1,4 +1,4 @@
-# StarNet: Your Celestial Companion
+# StarNet: Star Classification Tool
 
 Welcome to **StarNet**, the ultimate tool to discover the mysteries of the cosmos through the lens of star classifications. 
 Dive into the celestial realms and explore the rich tapestry of stellar phenomena with an AI-driven engine designed to simplify the cosmos for enthusiasts and astronomers alike.
