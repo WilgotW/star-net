@@ -1,0 +1,39 @@
+{
+  "SpectralClasses": [
+    {
+      "Class": "O",
+      "Description": "O class stars are the hottest and most luminous, emitting a brilliant blue light. Their high temperatures result in a strong ultraviolet radiation output.",
+      "DescriptionSv": "O-klass stjärnor är de hetaste och mest lysande, utsänder ett strålande blått ljus. Deras höga temperaturer resulterar i ett starkt ultraviolett strålningsutsläpp."
+    },
+    {
+      "Class": "B",
+      "Description": "B class stars are very luminous and blue-white in color, less hot than O class but still among the hottest stars visible to the naked eye.",
+      "DescriptionSv": "B-klass stjärnor är mycket lysande och blåvita till färgen, mindre heta än O-klass men fortfarande bland de hetaste stjärnorna synliga med blotta ögat."
+    },
+    {
+      "Class": "A",
+      "Description": "A class stars are white or bluish-white, known for their strong hydrogen lines. They are hot and bright, often found in the main sequence.",
+      "DescriptionSv": "A-klass stjärnor är vita eller blåvita, kända för sina starka väte linjer. De är heta och ljusa, ofta funna i huvudserien."
+    },
+    {
+      "Class": "F",
+      "Description": "F class stars are white, slightly cooler than A class stars, characterized by a presence of metal lines alongside hydrogen in their spectra.",
+      "DescriptionSv": "F-klass stjärnor är vita, något svalare än A-klass stjärnor, karaktäriseras av en närvaro av metallinjer tillsammans med väte i deras spektra."
+    },
+    {
+      "Class": "G",
+      "Description": "G class stars, including our Sun, are yellowish-white, of moderate temperature, and often host planetary systems, with a rich spectrum that includes both metals and hydrogen.",
+      "DescriptionSv": "G-klass stjärnor, inklusive vår sol, är gulaktigt vita, av måttlig temperatur, och värdar ofta planetsystem, med ett rikt spektrum som inkluderar både metaller och väte."
+    },
+    {
+      "Class": "K",
+      "Description": "K class stars are orange to red, cooler than the Sun, with a spectrum that is rich in metallic lines and strong molecular bands.",
+      "DescriptionSv": "K-klass stjärnor är orange till röda, svalare än solen, med ett spektrum som är rikt på metallinjer och starka molekylära band."
+    },
+    {
+      "Class": "M",
+      "Description": "M class stars are the coolest, red in color, with spectra dominated by complex molecules and strong titanium oxide bands, common among red dwarfs and giants.",
+      "DescriptionSv": "M-klass stjärnor är de svalaste, röda till färgen, med spektra dominerade av komplexa molekyler och starka titanoxidband, vanliga bland röda dvärgar och jättar."
+    }
+  ]
+}

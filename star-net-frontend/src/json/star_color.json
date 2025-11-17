@@ -1,0 +1,29 @@
+{
+  "StarColors": [
+    {
+      "Color": "Red",
+      "Description": "Red stars are the coolest, often either aging giants or diminutive red dwarfs. Their color is indicative of temperatures that allow molecules to form in their atmospheres.",
+      "DescriptionSv": "Röda stjärnor är de svalaste, ofta antingen åldrande jättar eller små röda dvärgar. Deras färg indikerar temperaturer som tillåter molekyler att bildas i deras atmosfärer."
+    },
+    {
+      "Color": "Orange",
+      "Description": "Orange stars, slightly hotter than red stars, balance between cool and warm temperatures, offering a rich spectrum for observation.",
+      "DescriptionSv": "Orangea stjärnor, något hetare än röda stjärnor, balanserar mellan kalla och varma temperaturer, erbjuder ett rikt spektrum för observation."
+    },
+    {
+      "Color": "Yellow",
+      "Description": "Yellow stars, like our Sun, are of moderate temperature, offering conditions favorable for life as we know it, with a balanced output across the visible spectrum.",
+      "DescriptionSv": "Gula stjärnor, som vår sol, är av måttlig temperatur, erbjuder förhållanden gynnsamma för liv som vi känner till det, med en balanserad produktion över det synliga spektrumet."
+    },
+    {
+      "Color": "White",
+      "Description": "White stars are hot and bright, often found in the main sequence or as the compact remnants of stars that have exhausted their nuclear fuel.",
+      "DescriptionSv": "Vita stjärnor är heta och ljusa, ofta funna i huvudserien eller som kompakta rester av stjärnor som har förbrukat sitt kärnbränsle."
+    },
+    {
+      "Color": "Blue",
+      "Description": "Blue stars are the hottest and most luminous, burning their fuel at an incredible rate, and often have short lifespans on a cosmic scale.",
+      "DescriptionSv": "Blåa stjärnor är de hetaste och mest lysande, bränner sitt bränsle i en otrolig takt, och har ofta korta livslängder på en kosmisk skala."
+    }
+  ]
+}

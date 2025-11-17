@@ -1,0 +1,15 @@
+{
+    "Descriptions": [
+      {
+        "page": "home",
+        "text": "Dive into the celestial realms with StarNet, your ultimate guide to the mysteries of star classifications. StarNet simplifies the cosmos, allowing you to predict star types and explore the rich tapestry of stellar phenomena. Key Features: Star Type Predictor: Input essential characteristics like temperature, luminosity, and radius, and our AI-driven engine will predict the star's classification. Discover in-depth insights about the star's features, including its size, brightness, and stage in the cosmic lifecycle. Stellar Encyclopedia: Our comprehensive guide to the stars provides detailed profiles on various star types. From the radiant blue giants to the tranquil red dwarfs, each profile is rich with information, stunning visuals, and scientific context, making the wonders of the universe accessible to everyone.",
+        "textSv": "Dyk in i de himmelska rikena med StarNet, din ultimata guide till mysterierna med stjärnklassificeringar. StarNet förenklar kosmos, vilket gör det möjligt för dig att förutsäga stjärntyper och utforska det rika spektret av stjärnfenomen. Viktiga funktioner: Stjärntypsprediktor: Ange grundläggande egenskaper som temperatur, ljusstyrka och radie, och vår AI-drivna motor kommer att förutsäga stjärnans klassificering. Upptäck djupgående insikter om stjärnans egenskaper, inklusive dess storlek, ljusstyrka och stadium i den kosmiska livscykeln. Stjärnencyklopedi: Vår omfattande guide till stjärnorna ger detaljerade profiler på olika stjärntyper. Från de strålande blå jättarna till de lugna röda dvärgarna, varje profil är rik på information, fantastiska visuella effekter och vetenskapligt sammanhang, vilket gör universums underverk tillgängliga för alla."
+      },
+      {
+        "page": "predict",
+        "text": "This tool predicts the type of a star based on its temperature, luminosity, and radius. Users input these values, and the AI model processes the data to identify the star's classification. Along with the prediction, it provides detailed information about the star's characteristics, such as its classification within the Hertzsprung-Russell diagram, comparative size, brightness, and its stage in the stellar lifecycle. This feature is designed for anyone interested in understanding more about stars, from amateur astronomers to professionals in the field.",
+        "textSv": "Detta verktyg förutsäger en stjärnas typ baserat på dess temperatur, ljusstyrka och radie. Användare matar in dessa värden, och AI-modellen bearbetar datan för att identifiera stjärnans klassificering. Tillsammans med förutsägelsen tillhandahåller den detaljerad information om stjärnans egenskaper, såsom dess klassificering inom Hertzsprung-Russell-diagrammet, jämförande storlek, ljusstyrka och dess stadium i stjärnlivscykeln. Denna funktion är utformad för alla som är intresserade av att förstå mer om stjärnor, från amatörastronomer till yrkesverksamma inom området."
+      }
+    ]
+  }
+  

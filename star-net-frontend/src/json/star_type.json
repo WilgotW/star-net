@@ -1,0 +1,40 @@
+{
+  "StarTypes": [
+    {
+      "Type": 0,
+      "Name": "Brown Dwarf",
+      "Description": "Not quite stars, brown dwarfs are 'failed' stars, too massive to be planets yet not massive enough to sustain nuclear fusion. They bridge the gap between the largest gas giants and the smallest stars.",
+      "DescriptionSv": "Inte riktigt stjärnor, bruna dvärgar är 'misslyckade' stjärnor, för massiva för att vara planeter men inte tillräckligt massiva för att upprätthålla kärnfusion. De broar gapet mellan de största gasjättarna och de minsta stjärnorna."
+    },
+    {
+      "Type": 1,
+      "Name": "Red Dwarf",
+      "Description": "Red dwarfs are the most numerous stars in the galaxy. Small and cool, they burn their fuel very slowly, giving them lifetimes that can span trillions of years.",
+      "DescriptionSv": "Röda dvärgar är de mest talrika stjärnorna i galaxen. Små och svala, de bränner sitt bränsle mycket långsamt, vilket ger dem livstider som kan sträcka sig över biljoner år."
+    },
+    {
+      "Type": 2,
+      "Name": "White Dwarf",
+      "Description": "The dense remnants of stars like our Sun, white dwarfs have exhausted their nuclear fuel and shed their outer layers, leaving behind a hot, compact core.",
+      "DescriptionSv": "De täta resterna av stjärnor som vår sol, vita dvärgar har förbrukat sitt kärnbränsle och kastat av sina yttre lager, och lämnar efter sig en het, kompakt kärna."
+    },
+    {
+      "Type": 3,
+      "Name": "Main Sequence",
+      "Description": "Main sequence stars are in the prime of their life, fusing hydrogen into helium. Their size, luminosity, and color depend on their mass, with our Sun being a typical example.",
+      "DescriptionSv": "Huvudseriestjärnor är i sina bästa år, och fusionerar väte till helium. Deras storlek, luminositet och färg beror på deras massa, med vår sol som ett typiskt exempel."
+    },
+    {
+      "Type": 4,
+      "Name": "Supergiant",
+      "Description": "Supergiants are among the most massive and luminous stars, having expanded enormously after exhausting the hydrogen in their cores. They often end their lives in spectacular supernova explosions.",
+      "DescriptionSv": "Supergiganter är bland de mest massiva och lysande stjärnorna, som har expanderat enormt efter att ha förbrukat väten i sina kärnor. De avslutar ofta sina liv i spektakulära supernovaexplosioner."
+    },
+    {
+      "Type": 5,
+      "Name": "Hypergiant",
+      "Description": "Hypergiants are the extreme of supergiants, with even greater mass and luminosity. They are rare, pushing the limits of stellar physics and often unstable, signifying a short lifespan on a cosmic scale.",
+      "DescriptionSv": "Hypergiganter är extremerna av supergiganter, med ännu större massa och luminositet. De är sällsynta, pressar gränserna för stjärnfysik och är ofta instabila, vilket betyder en kort livslängd på en kosmisk skala."
+    }
+  ]
+}
