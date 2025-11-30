@@ -9,7 +9,6 @@ from main import StarNet
 app = Flask(__name__)
 CORS(app)
 
-# New (explicitly allow non-weight objects):
 label_encoder_color = torch.load('./model/label_encoder_color.pth', weights_only=False)
 label_encoder_class = torch.load('./model/label_encoder_class.pth', weights_only=False)
 scaler = torch.load('./model/scaler.pth', weights_only=False)
@@ -19,7 +18,6 @@ model = StarNet(
     len(label_encoder_class.classes_)
 )
 
-# state dict is just tensors; you *can* keep weights_only=True here if you want:
 model.load_state_dict(torch.load('./model/model_state_dict.pth', weights_only=True))
 model.eval()
 
@@ -49,6 +47,3 @@ def predict():
     rad = data['radius']
     prediction = predict_star_characteristics(temp, lum, rad)
     return jsonify(prediction)
-
-if __name__ == '__main__':
-    app.run(debug=True)
